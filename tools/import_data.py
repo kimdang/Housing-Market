@@ -5,24 +5,14 @@
 #   Version: 1.0
 #################
 
-import pandas as pd
 import sqlalchemy as sqlal
-
-def convert_dollar_to_int ():
-    s=sanjose['Single Family Home'].str.replace(",", '')
-    a=s.str.lstrip('$')
-    c=a.astype('int')
-    sanjose['Single Family Home'] = c
-
-def convert_to_datetime ():
-    start = datetime.datetime(2000,1,1)
-    mylist = []
-    ngan = start
-    for item in sanjose['Date']:
-        mylist.append(ngan)
-        ngan = add_months(start,1)
-        start = ngan
-
+import pandas as pd
+from pandas import DataFrame
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime
+import calendar
+%matplotlib inline
 
 def add_months(sourcedate, months):
     month = sourcedate.month - 1 + months
@@ -30,6 +20,25 @@ def add_months(sourcedate, months):
     month = month % 12 + 1
     day = min(sourcedate.day, calendar.monthrange(year,month)[1])
     return datetime.date(year, month, day)
+
+def convert_dollar_object_to_int(source):
+    no_comma = source.str.replace(",", '')
+    no_dollar = no_comma.str.lstrip('$')
+    complete = no_dollar.astype('int')
+    source = complete
+    return source
+
+def convert_to_datetime_by_month(source,start_year,start_month,start_day):
+    start = datetime.datetime(start_year,start_month,start_day)
+    datetime_list = []
+    for item in source:
+        datetime_list.append(start)
+        start = add_months(start,1)
+    source = datetime_list
+    return source
+
+
+
 
 
 # path to the data file 

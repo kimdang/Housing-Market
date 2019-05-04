@@ -37,8 +37,16 @@ def convert_to_datetime_by_month(source,start_year,start_month,start_day):
     source = datetime_list
     return source
 
-
-
+def extract_from_zillow_by_city (city):
+    if any(city in s for s in zillow_by_city['RegionName']):
+        ind = zillow_by_city.index[zillow_by_city['RegionName']==city]
+        city_df = zillow_by_city.loc[ind,:]
+        city_df = city_df.T
+        city_df = city_df.drop(city_df.index[0:7])
+        city_df.columns = [city]
+        return city_df
+    else:
+        return "Does not exist in databse."
 
 
 # path to the data file 

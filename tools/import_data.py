@@ -49,6 +49,13 @@ def extract_from_zillow_by_city (city):
         return "Does not exist in databse."
 
 
+def calculate_moving_average (df):
+    MA_day = [14,30,60]
+    for MA in MA_day:
+        column_name = "MA for %s days" %(str(MA))
+        df[column_name] = df['Listing'].rolling(MA).mean()
+    return df
+
 # path to the data file 
 filename = ""
 city = pd.read_csv(filename)

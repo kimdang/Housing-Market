@@ -6,7 +6,7 @@ from api import views
 # ]
 
 urlpatterns = [
-    path('housing', views.Housing.as_view())
+    path('housing/<str:state>/<str:city>/', views.Housing.as_view())
 ]
 
 # allowed request to hit localhost/todos and localhost/todos.json

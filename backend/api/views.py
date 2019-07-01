@@ -43,17 +43,38 @@ class Housing(APIView):
                              cursorclass=pymysql.cursors.DictCursor)
 
         with conn.cursor() as cursor:
-            query1 = "SELECT EXISTS (SELECT * FROM location WHERE City = '%s')" %(city)
-            query2 = "SELECT EXISTS (SELECT * FROM location WHERE State = '%s')" %(state)
+            print(city)
+            print(state)
+            query1 = "SELECT ind FROM location_id WHERE (city = '%s' AND state = '%s')" %(city, state)
             cursor.execute(query1)
-            if True:
-                cursor.execute(query2)
-                if True:
-                    return Response(city, status=status.HTTP_200_OK)
-                else:
-                    return Response('Not Found', status=status.HTTP_404_NOT_FOUND)
-            else:
+            location_ind = cursor.fetchone()['ind']
+            print(location_ind)
+            conn.commit()
+
+            if location_ind == None:
                 return Response('Not Found', status=status.HTTP_404_NOT_FOUND)
+            
+            query2 = "SELECT url FROM analysis WHERE location_id = %s" %(location_ind)
+            cursor.execute(query2)
+            url = cursor.fetchone()['url']
+            print(url)
+            conn.commit()
+
+            if url == None:
+                return Response('Analysis Not Found', status=status.HTTP_404_NOT_FOUND)
+
+
+            city_info = {
+                'id' : location_ind,
+                'city' : city,
+                'state' : state,
+                'figure' : url
+            }
+
+  
+            return Response(city_info, status=status.HTTP_200_OK)
+
+
 
 
         print("You entered " + state)

@@ -49,7 +49,7 @@ const bodyContainer = {
 }
 
 const CitySelectorSection = {
-    width: '20%',
+    width: '15%',
 }
 
 const AnalysisSection = {

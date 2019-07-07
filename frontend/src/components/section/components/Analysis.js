@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 
-import { Figure } from '../../common'
+import { AnalysisByCity, AnalysisHeader } from '../../common'
 import _ from 'lodash'
 
 class Analysis extends React.Component {
@@ -9,6 +9,7 @@ class Analysis extends React.Component {
         super(props)
         this.state = { city1: {}, city2: {} }        
     }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.analysis.city1.id != this.state.city1.id) {
             this.setState({
@@ -24,26 +25,33 @@ class Analysis extends React.Component {
 
     renderFigure1() {
         if ( ! _.isEmpty(this.state.city1) ) {
-            return <Figure  city={this.state.city1} />
+            return <AnalysisByCity city={this.state.city1} />
         }
     }
 
     renderFigure2() {
         if ( ! _.isEmpty(this.state.city2) ) {
-            return <Figure  city={this.state.city2} />
+            return <AnalysisByCity city={this.state.city2} />
+        }
+    }
+
+    renderHeader() {
+        if ( !_.isEmpty(this.state.city1) || ! _.isEmpty(this.state.city2) ) {
+            return <AnalysisHeader />
         }
     }
 
     render() {
         return (
-            <div>
-                <div style={analysisContainer}>
-                    <div style={city1Container}>
-                        {this.renderFigure1()}
-                    </div>
-                    <div style={city2Container}>
-                        {this.renderFigure2()}
-                    </div>
+            <div style={analysisContainer}>
+                <div style={cityContainer}>
+                    {this.renderFigure1()}
+                </div>
+                <div style={descriptionContainer}>
+                    {this.renderHeader()}
+                </div>
+                <div style={cityContainer}>
+                    {this.renderFigure2()}
                 </div>
             </div>
         )
@@ -61,15 +69,20 @@ const analysisContainer = {
     // backgroundColor: 'white'
 }
 
-const city1Container = {
-    width: '50%',
-    padding: '5px'
+const descriptionContainer = {
+    width: '20%',
+    height: '100%',
+    boxShadow: '0 8px 6px -6px #9E9E9E'
 }
 
-const city2Container = {
-    width: '50%',
-    padding: '5px'
+const cityContainer = {
+    width: '40%',
+    padding: '5px',
+    flexDirection: 'column',
+    display: 'flex',
+    justifyContent: 'start'
 }
+
 
 /** connect map state in store to props in component */
 const mapStateToProps = (state) => {

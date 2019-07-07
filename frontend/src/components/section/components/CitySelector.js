@@ -77,7 +77,7 @@ class CitySelector extends React.Component {
                         Analyze
                     </Button>
                 </div>
-                <div>
+                <div style={cityCardContainer}>
                     {this.renderCityCard1()}
                     {this.renderCityCard2()}
                 </div>
@@ -92,7 +92,9 @@ const CitySelectorContainer = {
     justifyContent: 'center',
     margin: 20,
     paddingLeft: 10,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    boxShadow: '0 8px 6px -6px #9E9E9E',
+    borderRadius: 5
 }
 
 const inputContainer = {
@@ -102,7 +104,10 @@ const inputContainer = {
 
 const buttonContainer = {
     display: 'flex',
-    // justifyContent: 'center'
+}
+
+const cityCardContainer = {
+    margin: 10
 }
 
 /** connect map state in store to props in component */

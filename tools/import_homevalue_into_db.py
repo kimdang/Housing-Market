@@ -12,7 +12,7 @@ city_count = homevalue['RegionName'].count()
 
 
 
-for i in range(2): # <----- change to city_count
+for i in range(city_count):
     city_to_db = my_tools.prep_data(homevalue, i, drop_column=7)
     city_to_db.columns = ['value']
     location_id = i+1
@@ -25,6 +25,14 @@ for i in range(2): # <----- change to city_count
 
 
     row_count = city_to_db['value'].count()
+    total = ""
     for j in range(row_count):
-        insert_query = "INSERT INTO data_%s (dt, homevalue) VALUES ('%s', %s)" %(location_id, city_to_db.index[j], city_to_db['value'][j])
-        execute_mysql.run_query(insert_query)
+        if (j != (row_count-1)):
+                one_entry = "('%s',%s)," %(city_to_db.index[j], city_to_db['value'][j])
+        else:
+                one_entry = "('%s',%s)" %(city_to_db.index[j], city_to_db['value'][j])
+        total = total + one_entry
+    # create 1 large string for insertion of all entries into 1 city/table  
+
+    insert_query = "INSERT INTO data_%s (dt, homevalue) VALUES %s" %(location_id, total)
+    execute_mysql.run_query(insert_query)         

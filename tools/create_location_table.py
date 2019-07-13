@@ -7,7 +7,7 @@ import execute_mysql
 listing = pd.read_csv('listing_prices.csv')
 new_state = pd.DataFrame(listing['StateName'].map(translate_state_name.state_dictionary))
 
-table_query = "CREATE TABLE location (id INT AUTO_INCREMENT PRIMARY KEY, city VARCHAR(255), state VARCHAR(255)"
+table_query = "CREATE TABLE location (id INT AUTO_INCREMENT PRIMARY KEY, city VARCHAR(255), state VARCHAR(255))"
 execute_mysql.run_query(table_query)
 
 

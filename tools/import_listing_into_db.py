@@ -4,17 +4,18 @@ import execute_mysql
 import translate_state_name
 import my_tools
 
-
+# retrieve location table from database
 pull_query = "SELECT * FROM location"
 location = execute_mysql.run_query(pull_query, fetch=True, fetch_option='fetchall')
 location = pd.DataFrame(location)
 
-
+# get listing dataset
 listing = pd.read_csv('listing_prices.csv')
+listing.drop_duplicates(['RegionName', 'StateName'], keep=False)
 new_state = pd.DataFrame(listing['StateName'].map(translate_state_name.state_dictionary))
+
+
 city_count = listing['RegionName'].count()
-
-
 for i in range(city_count):
     city = listing['RegionName'][i]
     state = new_state['StateName'][i]

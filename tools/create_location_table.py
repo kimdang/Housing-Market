@@ -5,10 +5,14 @@ import execute_mysql
 
 
 # location ID is created from listing dataset 
-# state name will be abbreviated
-# there are cases where multiple datasets exist for 1 city
 listing = pd.read_csv('listing_prices.csv')
-listing.drop_duplicates(['RegionName', 'StateName'], keep=False)
+
+# there are cases where multiple datasets exist for 1 city
+listing.drop_duplicates(['RegionName', 'StateName'], keep=False, inplace=True)
+new_index = range(0, len(listing['RegionName']))
+listing = listing.reindex(new_index)
+
+# state name will be abbreviated
 new_state = pd.DataFrame(listing['StateName'].map(translate_state_name.state_dictionary))
 
 

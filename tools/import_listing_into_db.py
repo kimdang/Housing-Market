@@ -9,9 +9,13 @@ pull_query = "SELECT * FROM location"
 location = execute_mysql.run_query(pull_query, fetch=True, fetch_option='fetchall')
 location = pd.DataFrame(location)
 
-# get listing dataset
+# get listing dataset and drop duplicates
 listing = pd.read_csv('listing_prices.csv')
-listing.drop_duplicates(['RegionName', 'StateName'], keep=False)
+listing.drop_duplicates(['RegionName', 'StateName'], keep=False, inplace=True)
+new_index = pd.Series(range(0, len(listing['RegionName'])))
+listing.set_index(new_index, inplace=True)
+
+# state name will be abbreviated
 new_state = pd.DataFrame(listing['StateName'].map(translate_state_name.state_dictionary))
 
 

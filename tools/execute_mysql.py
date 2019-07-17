@@ -13,9 +13,18 @@ conn = pymysql.connect(host=HOST,
                        charset='utf8mb4', 
                        cursorclass=pymysql.cursors.DictCursor)
 
-def run_query (query):
+def run_query (query, fetch=False, fetch_option='fetchone'):
     print(query)
     with conn.cursor() as cursor:
         cursor.execute(query)
+        if fetch==True:
+            if fetch_option == "fetchone":
+                result = cursor.fetchone()
+            else:
+                result = cursor.fetchall()
         conn.commit()
-    return
+    if fetch==True:
+        return result
+    else:
+        return    
+

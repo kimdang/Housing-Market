@@ -95,12 +95,15 @@ def get_graph_values (location_id, city, state):
     
     # calculate values 
     pct_avg = city_df['percent'].mean()
+    pct_avg = pct_avg*100
     standard = city_df['percent'].std()
+    standard = standard*100
 
     # put 4 values into a dataframe
     vals = [pct_avg, standard, five_year_price, ten_year_price]
     vals_df = pd.DataFrame(vals).T
     vals_df.columns = ['percent average', 'standard deviation', '5_year', '10_year']
+    vals_df['location_id'] = location_id
 
     return vals_df
 
@@ -133,5 +136,31 @@ def get_url (location_id):
     # put 3 links into a dataframe    
     link_df = pd.DataFrame(total).T
     link_df.columns = ['historical', 'percent change', 'predictive']
+    link_df['location_id'] = location_id
     
     return link_df
+
+
+def insert_analysis(df, key):
+    if key == "figure":
+        row_count = df['historical'].count()
+        total = ""
+        for j in range(row_count):
+            if (j != (row_count-1)):
+                one_entry = "('%s','%s','%s',%s)," %(df['historical'][j], df['percent change'][j], df['predictive'][j], df['location_id'][j])
+            else:
+                one_entry = "('%s','%s','%s',%s)" %(df['historical'][j], df['percent change'][j], df['predictive'][j], df['location_id'][j])
+            total = total + one_entry
+        insert_query = "INSERT INTO analysis_figure (historical_url, pct_change_url, predict_url, location_id) VALUES %s" %(total)
+        execute_mysql.run_query(insert_query)
+    else:
+        row_count = df['percent average'].count()
+        total = ""
+        for j in range(row_count):
+            if (j != (row_count-1)):
+                one_entry = "(%s,%s,%s,%s,%s)," %(df['percent average'][j], df['standard deviation'][j], df['5_year'][j], df['10_year'][j], df['location_id'][j])
+            else:
+                one_entry = "(%s,%s,%s,%s,%s)" %(df['percent average'][j], df['standard deviation'][j], df['5_year'][j], df['10_year'][j], df['location_id'][j])
+            total = total + one_entry
+        insert_query = "INSERT INTO analysis_value (pct_avg, std, five_year, ten_year, location_id) VALUES %s" %(total)
+        execute_mysql.run_query(insert_query)    

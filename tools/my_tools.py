@@ -6,6 +6,10 @@ import seaborn as sns
 from fbprophet import Prophet
 import numpy as np
 sns.set_style('whitegrid')
+import boto3
+from botocore.client import Config
+import aws_access
+import os
 
 
 def prep_data (raw_df, ind, drop_column):
@@ -74,7 +78,7 @@ def get_graph_values (location_id, city, state):
     
     # calculate 5 and 10 year price
     five_year_dt = "2024-5-31"
-    five_year_ind = location.index[(forecast['ds']== five_year_dt).idxmax()]
+    five_year_ind = forecast.index[(forecast['ds']== five_year_dt).idxmax()]
     five_year_price = forecast['yhat'][five_year_ind]
     ten_year_price = forecast['yhat'].iloc[-1]
     
@@ -93,4 +97,41 @@ def get_graph_values (location_id, city, state):
     pct_avg = city_df['percent'].mean()
     standard = city_df['percent'].std()
 
-    return pct_avg, standard, five_year_price, ten_year_price
+    # put 4 values into a dataframe
+    vals = [pct_avg, standard, five_year_price, ten_year_price]
+    vals_df = pd.DataFrame(vals).T
+    vals_df.columns = ['percent average', 'standard deviation', '5_year', '10_year']
+
+    return vals_df
+
+
+
+def get_url (location_id):
+
+    # establish connection to aws
+    ACCESS_KEY_ID = aws_access.access['ACCESS_KEY_ID']
+    ACCESS_SECRET_KEY = aws_access.access['ACCESS_SECRET_KEY']
+    BUCKET_NAME = aws_access.access['BUCKET_NAME']
+    s3 = boto3.resource('s3',
+                   aws_access_key_id = ACCESS_KEY_ID, 
+                   aws_secret_access_key = ACCESS_SECRET_KEY,
+                   config = Config(signature_version='s3v4'))
+    
+    # 3 graphs for each location_id
+    text = ['history', 'percent', 'predict']
+    
+    # get url
+    total = []
+    for name in text:
+        filename = "%s_%s" %(name, location_id)
+        image = open('%s.png' %(filename), 'rb')
+        s3.Bucket(BUCKET_NAME).put_object(Key='%s.png' %(filename), Body=image, ContentType = 'image/png')
+        link = "https://" + BUCKET_NAME + ".s3-us-west-2.amazonaws.com/" + filename + ".png"
+        os.remove('%s.png' %(filename))
+        total.append(link)
+
+    # put 3 links into a dataframe    
+    link_df = pd.DataFrame(total).T
+    link_df.columns = ['historical', 'percent change', 'predictive']
+    
+    return link_df

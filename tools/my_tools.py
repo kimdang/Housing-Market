@@ -21,5 +21,5 @@ def prep_data (raw_df, ind, drop_column):
     for i in range(count):
         date = datetime.datetime.strptime(city.index[i], "%Y-%m")
         date_list.append(date)
-    new_df = pd.DataFrame(city[ind], index=date_list)
+        new_df = pd.DataFrame(city[ind], index=date_list)
     return new_df

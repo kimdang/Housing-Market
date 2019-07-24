@@ -21,12 +21,10 @@ from execute_mysql import run_query
 
 class Housing(APIView):
     def get(self, request, state, city, format=None):
-        # you will have state and city name
-        # you need to
-        # 1. Make connection to database - using mysql pip package
-        # 2. Query database with the state and city name
-        # 3. if the state and city are in database -> return Response(city, status=status.HTTP_200_OK)
-        # 4. if not -> return Response('Not Found', status=status.HTTP_404_NOT_FOUND)
+
+        if "_" in city:
+            city = city.replace("_", " ")
+
         query1 = "SELECT id FROM location WHERE (city = '%s' AND state = '%s')" %(city, state)
         location = run_query(query1, fetch=True, fetch_option='fetchone')
         location_id = location['id']
@@ -50,50 +48,18 @@ class Housing(APIView):
 
 
 
-
-
         city_info = {
             'city' : city,
             'state' : state,
             'location_id' : location_id,
-            'historical data' : url_historical,
+            'historical_data' : url_historical,
             'forecast' : url_predict,
             'histogram' : url_pct,
-            '5 year price' : val_5_yr,
-            '10 year price' : val_10_yr,
-            'percent average' : pct_avg,
-            'standard deviation' : std
-
+            '5_year_price' : val_5_yr,
+            '10_year_price' : val_10_yr,
+            'percent_average' : pct_avg,
+            'standard_deviation' : std
         }
-
-        # with conn.cursor() as cursor:
-        #     print(city)
-        #     print(state)
-        #     query1 = "SELECT ind FROM location_id WHERE (city = '%s' AND state = '%s')" %(city, state)
-        #     cursor.execute(query1)
-        #     location_ind = cursor.fetchone()['ind']
-        #     print(location_ind)
-        #     conn.commit()
-
-        #     if location_ind == None:
-        #         return Response('Not Found', status=status.HTTP_404_NOT_FOUND)
-            
-        #     query2 = "SELECT url FROM analysis WHERE location_id = %s" %(location_ind)
-        #     cursor.execute(query2)
-        #     url = cursor.fetchone()['url']
-        #     print(url)
-        #     conn.commit()
-
-        #     if url == None:
-        #         return Response('Analysis Not Found', status=status.HTTP_404_NOT_FOUND)
-
-
-        #     city_info = {
-        #         'id' : location_ind,
-        #         'city' : city,
-        #         'state' : state,
-        #         'figure' : url
-        #     }
 
   
         return Response(city_info, status=status.HTTP_200_OK)

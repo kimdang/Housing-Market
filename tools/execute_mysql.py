@@ -23,6 +23,8 @@ def run_query (query, fetch=False, fetch_option='fetchone'):
             else:
                 result = cursor.fetchall()
         conn.commit()
+        cursor.close()
+    conn.close()    
     if fetch==True:
         return result
     else:

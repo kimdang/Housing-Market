@@ -1,4 +1,4 @@
-FROM python:3
+FROM alirom93/django:master-1
 
 RUN mkdir /backend
 

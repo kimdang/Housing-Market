@@ -1,11 +1,11 @@
 import React from 'react'
 import { global } from '../index'
 
-const AnalysisHeader = ({ }) => {
+const AnalysisHeader = ({ header }) => {
     return (
         <div>
             <div style={{ ...section1, height: global.maxHeightSubSection }} >
-                <h3 style={textStyle}> Average House Value </h3>
+                <h3 style={textStyle}> {header} </h3>
             </div>
         </div>
     )

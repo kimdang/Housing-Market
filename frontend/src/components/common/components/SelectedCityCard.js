@@ -3,7 +3,7 @@ import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
 
 
-const SelectedCityCard = ({ city, state }) => {
+const SelectedCityCard = ({ id, city, state }) => {
     const selectedCity = `${city}, ${state}`
 
     function handleDelete() {
@@ -25,8 +25,10 @@ const SelectedCityCard = ({ city, state }) => {
 
 const selectedCityContainer = {
     display: 'flex',
-    width: '100%',
-    margin: 5
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    marginLeft: 20,
 }
   
   

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 // import ReactDOM from 'react-dom'
 import Button from '@material-ui/core/Button';
 
-import { InputField, SelectedCityCard } from '../../common'
+import { InputField, SelectedCityCard, SearchBar } from '../../common'
 
 import { fetchFigure } from '../../../actions'
 
@@ -32,52 +32,62 @@ class CitySelector extends React.Component {
     }
 
     capitalizeFirstLetter = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1)
+        return str.toLowerCase().split(' ').map((subStr) => subStr.charAt(0).toUpperCase() + subStr.slice(1)).join(' ')
     }
 
     handleSubmit = () => {
         const city = this.capitalizeFirstLetter(this.state.city)
-        const state = this.state.state.toUpperCase()
-        this.props.getFigure(state,city)
+        const state = this.capitalizeFirstLetter(this.state.state)
+        this.props.getFigure(city,state)
     }
 
     renderCityCard1() {
         if ( ! _.isEmpty(this.state.analysis.city1) ) {
             return (
-                <SelectedCityCard 
-                    city= {this.state.analysis.city1.city}
-                    state= {this.state.analysis.city1.state}
-                />
+                <div style={selectedCityCard}>
+                    <SelectedCityCard 
+                        id = {this.props.analysis.city1.id}
+                        city= {this.state.analysis.city1.city}
+                        state= {this.state.analysis.city1.state}
+                    />
+                </div>
             )
         }
     }
     renderCityCard2() {
         if ( ! _.isEmpty(this.props.analysis.city2) ) {
             return (
-                <SelectedCityCard 
-                    city= {this.props.analysis.city2.city}
-                    state= {this.props.analysis.city2.state}
-                />
+                <div style={selectedCityCard}>
+                    <SelectedCityCard
+                        id = {this.props.analysis.city2.id}
+                        city= {this.props.analysis.city2.city}
+                        state= {this.props.analysis.city2.state}
+                    />
+                </div>
             )
         }
     }
 
     render() {
         return (
-            <div style={CitySelectorContainer} >
-                <div style={inputContainer} >
-                    <InputField label='City' inputValue={this.handleCityInput} />
-                    <InputField label='State' inputValue={this.handleStateInput} />
-                </div>
-                <div style= {buttonContainer} >
-                    <Button
-                        variant="contained" 
-                        color="primary" 
-                        onClick={this.handleSubmit}>
-                        Analyze
-                    </Button>
+            <div style={citySelectorContainer} >
+                <div style={selectorContainer} >
+                    <div style={inputContainer} >
+                        <InputField label='City' inputValue={this.handleCityInput} />
+                        <InputField label='State' inputValue={this.handleStateInput} />
+                    </div>
+                    <div style= {buttonContainer} >
+                        <Button
+                            variant="contained" 
+                            color="primary" 
+                            onClick={this.handleSubmit}>
+                            Analyze
+                        </Button>
+                    </div>
                 </div>
                 <div style={cityCardContainer}>
+                    <h4 style={{marginLeft: 20}}>Selected Cities:</h4>
+                    <hr />
                     {this.renderCityCard1()}
                     {this.renderCityCard2()}
                 </div>
@@ -86,20 +96,29 @@ class CitySelector extends React.Component {
     }
 }
 
-const CitySelectorContainer = {
+const citySelectorContainer = {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+}
+
+const selectorContainer = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    margin: 20,
-    paddingLeft: 10,
-    backgroundColor: 'white',
-    boxShadow: '0 8px 6px -6px #9E9E9E',
-    borderRadius: 5
+    alignItems: 'center',
+    height: 200,
+    width: '100%',
+    maxWidth: 300,
+    borderRadius: 2,
+    backgroundColor: '#323544',
+    boxShadow: 'rgb(158, 158, 158) 0px 8px 6px -6px'
 }
 
 const inputContainer = {
     height: 120,
-    width: '100%',
+    width: '80%',
 }
 
 const buttonContainer = {
@@ -107,7 +126,16 @@ const buttonContainer = {
 }
 
 const cityCardContainer = {
-    margin: 10
+    marginTop: 20,
+    backgroundColor: '#fff',
+    boxShadow: 'rgb(158, 158, 158) 0px 8px 6px -6px',   
+    width: '100%',
+    height: 200,
+    borderRadius: 2,
+}
+
+const selectedCityCard = {
+    marginTop: 10
 }
 
 /** connect map state in store to props in component */
